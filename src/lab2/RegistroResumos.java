@@ -108,10 +108,20 @@ public class RegistroResumos {
         return false;
     }
 
-    public String[] busca(String chaveDeBusca){
-        String chaveLower  = chaveDeBusca.toLowerCase();
+    /**
+     * Realiza uma busca nos conteúdos dos resumos cadastrados.
+     * Retorna os temas dos resumos cujo conteúdo contenha a chave de busca,
+     * ignorando diferenças entre maiúsculas e minúsculas.
+     * O array de temas retornado é ordenado alfabeticamente.
+     *
+     * @param chaveDeBusca o termo a ser pesquisado dentro do conteúdo dos resumos
+     * @return um array de String contendo os temas encontrados em ordem alfabética
+     */
+    public String[] busca(String chaveDeBusca) {
+        String chaveLower = chaveDeBusca.toLowerCase();
         int contador = 0;
-        for (int i = 0; i < quantidadeAtual; i++){
+
+        for (int i = 0; i < quantidadeAtual; i++) {
             if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
                 contador++;
             }
@@ -119,15 +129,15 @@ public class RegistroResumos {
 
         String[] resultados = new String[contador];
         int index = 0;
-        for (int i = 0; i < quantidadeAtual; i++){
+
+        for (int i = 0; i < quantidadeAtual; i++) {
             if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
                 resultados[index] = totalResumos[i].getTema();
                 index++;
             }
-
         }
+
         Arrays.sort(resultados);
         return resultados;
     }
-
 }
