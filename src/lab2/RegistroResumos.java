@@ -1,5 +1,7 @@
 package lab2;
 
+import java.util.Arrays;
+
 /**
  * Classe responsável pelo armazenamento dos resumos criados pelo aluno.
  * Armazena uma quantidade limitada de resumos definida pelo próprio aluno.
@@ -105,4 +107,27 @@ public class RegistroResumos {
         }
         return false;
     }
+
+    public String[] busca(String chaveDeBusca){
+        String chaveLower  = chaveDeBusca.toLowerCase();
+        int contador = 0;
+        for (int i = 0; i < quantidadeAtual; i++){
+            if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
+                contador++;
+            }
+        }
+
+        String[] resultados = new String[contador];
+        int index = 0;
+        for (int i = 0; i < quantidadeAtual; i++){
+            if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
+                resultados[index] = totalResumos[i].getTema();
+                index++;
+            }
+
+        }
+        Arrays.sort(resultados);
+        return resultados;
+    }
+
 }
