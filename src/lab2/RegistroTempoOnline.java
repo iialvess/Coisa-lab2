@@ -12,6 +12,7 @@ public class RegistroTempoOnline {
     private String nomeDisciplina;
     private int tempoInvestidoOnline;
 
+
     /**
      * Inicializa um novo registro de tempo online recebendo o nome da disciplina a ser monitorada.
      * Define por padrão o atributo tempoEsperado como 120.

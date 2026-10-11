@@ -106,6 +106,7 @@ public class Disciplina {
         return (somaPonderada / somaPesos);
     }
 
+
     /**
      * Analisa a média do aluno e a sua situação de aprovação frente à disciplina.
      *

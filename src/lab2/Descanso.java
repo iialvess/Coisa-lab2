@@ -11,6 +11,7 @@ public class Descanso {
     private int horasDeDescanso;
     private int numeroDeSemana;
 
+
     /**
      * Inicializa o monitoramento do descanso do aluno.
      * Todo aluno começa com as horas de descanso zeradas e o número de semanas igual a 1.

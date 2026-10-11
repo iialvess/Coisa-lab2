@@ -9,12 +9,14 @@ public class Resumo {
     private String tema;
     private String conteudo;
 
+
     /**
      * Inicializa um novo Resumo com o tema e o conteúdo informados pelo aluno.
      *
      * @param tema o tema ou assunto do resumo
      * @param conteudo o texto descritivo/conteúdo do resumo
      */
+    
     public Resumo(String tema, String conteudo) {
         this.tema = tema;
         this.conteudo = conteudo;

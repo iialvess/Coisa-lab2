@@ -3,27 +3,22 @@ package lab2;
 import java.util.Arrays;
 
 /**
- * Classe responsável pelo armazenamento dos resumos criados pelo aluno.
- * Armazena uma quantidade limitada de resumos definida pelo próprio aluno.
+ * Local onde se registram todos os resumos e encapsula todas as operações com resumos.
  *
  * @author Iago Alves
  */
 public class RegistroResumos {
-    private Resumo[] totalResumos;
-    private int numeroDeResumos; // Capacidade máxima
-    private int quantidadeAtual;
+    private Resumo[] resumos;
     private int proximaPosicao;
 
     /**
-     * Inicializa um novo Registro para os resumos do aluno.
-     * Define a capacidade máxima com base no valor fornecido e inicializa o array de resumos.
+     * Constrói o RegistroResumos, inicializa o array onde serão armazenados os resumos
+     * e o índice que servirá de apontador para a próxima posição livre.
      *
-     * @param numeroDeResumos número máximo de resumos que podem ser adicionados ao registro
+     * @param numeroResumos define a capacidade máxima do array de resumos
      */
-    public RegistroResumos(int numeroDeResumos) {
-        this.numeroDeResumos = numeroDeResumos;
-        this.totalResumos = new Resumo[numeroDeResumos];
-        this.quantidadeAtual = 0;
+    public RegistroResumos(int numeroResumos) {
+        this.resumos = new Resumo[numeroResumos];
         this.proximaPosicao = 0;
     }
 
@@ -31,22 +26,16 @@ public class RegistroResumos {
      * Adiciona um novo resumo ao registro na próxima posição disponível,
      * desde que ainda não exista um resumo cadastrado com o mesmo tema.
      *
-     * @param tema o tema do resumo
-     * @param conteudo o conteúdo do resumo
+     * @param tema o tema do resumo a ser adicionado
+     * @param conteudo o conteúdo do resumo a ser adicionado
      */
     public void adiciona(String tema, String conteudo) {
         if (this.temResumo(tema)) {
             return;
         }
-        this.totalResumos[this.proximaPosicao] = new Resumo(tema, conteudo);
+        this.resumos[this.proximaPosicao] = new Resumo(tema, conteudo);
 
-        // Controla o incremento da quantidade de resumos válidos cadastrados
-        if (this.quantidadeAtual < this.numeroDeResumos) {
-            this.quantidadeAtual++;
-        }
-
-        // Substituição circular
-        if (this.proximaPosicao == this.totalResumos.length - 1) {
+        if (this.proximaPosicao == this.resumos.length - 1) {
             this.proximaPosicao = 0;
         } else {
             this.proximaPosicao += 1;
@@ -54,54 +43,64 @@ public class RegistroResumos {
     }
 
     /**
-     * Gera um array contendo os resumos cadastrados formatados como "tema: resumo".
+     * Retorna um array de String contendo a representação de todos os resumos cadastrados.
      *
-     * @return um array de String contendo os resumos cadastrados
+     * @return um array de String com os resumos formatados no padrão "tema: conteúdo"
      */
     public String[] pegaResumos() {
-        String[] copiaResumos = new String[this.quantidadeAtual];
-        for (int i = 0; i < this.quantidadeAtual; i++) {
-            copiaResumos[i] = this.totalResumos[i].toString();
+        int qntdResumos = this.conta();
+        String[] resumosFormatado = new String[qntdResumos];
+
+        for (int i = 0; i < qntdResumos; i++) {
+            resumosFormatado[i] = this.resumos[i].toString();
         }
-        return copiaResumos;
+        return resumosFormatado;
     }
 
     /**
-     * Retorna a quantidade de resumos cadastrados atualmente no registro.
+     * Retorna uma String com as informações gerais e temas de todos os resumos cadastrados.
      *
-     * @return o total de posições preenchidas com resumos
-     */
-    public int conta() {
-        return this.quantidadeAtual;
-    }
-
-    /**
-     * Imprime a quantidade de resumos cadastrados e, na linha seguinte, os temas desses resumos.
-     *
-     * @return uma String com a quantidade e os temas dos resumos cadastrados
+     * @return uma String contendo a quantidade e os temas dos resumos
      */
     public String imprimeResumos() {
         int qntdResumos = this.conta();
         String impressao = "- " + qntdResumos + " resumo(s) cadastrado(s)\n-";
         for (int i = 0; i < qntdResumos; i++) {
             if (i != qntdResumos - 1) {
-                impressao += " " + this.totalResumos[i].getTema() + " |";
+                impressao += " " + this.resumos[i].getTema() + " |";
             } else {
-                impressao += " " + this.totalResumos[i].getTema();
+                impressao += " " + this.resumos[i].getTema();
             }
         }
         return impressao;
     }
 
     /**
-     * Percorre o registro verificando se existe algum resumo cadastrado com o tema informado.
+     * Conta a quantidade de resumos válidos armazenados atualmente no array.
      *
-     * @param tema o tema do resumo a ser pesquisado
-     * @return true caso exista um resumo com o tema informado, false caso contrário
+     * @return a quantidade de resumos cadastrados
+     */
+    public int conta() {
+        int contagem = 0;
+        for (int i = 0; i < this.resumos.length; i++) {
+            if (this.resumos[i] == null) {
+                return contagem;
+            }
+            contagem += 1;
+        }
+        return contagem;
+    }
+
+    /**
+     * Verifica se já existe um resumo cadastrado com o tema informado.
+     *
+     * @param tema o tema do resumo procurado
+     * @return true caso exista um resumo com esse tema, false caso contrário
      */
     public boolean temResumo(String tema) {
-        for (int i = 0; i < this.quantidadeAtual; i++) {
-            if (totalResumos[i].getTema().equals(tema)) {
+        int qntdResumos = this.conta();
+        for (int i = 0; i < qntdResumos; i++) {
+            if (this.resumos[i].getTema().equals(tema)) {
                 return true;
             }
         }
@@ -109,20 +108,19 @@ public class RegistroResumos {
     }
 
     /**
-     * Realiza uma busca nos conteúdos dos resumos cadastrados.
-     * Retorna os temas dos resumos cujo conteúdo contenha a chave de busca,
+     * Busca os temas dos resumos cujo conteúdo contém a palavra chave informada,
      * ignorando diferenças entre maiúsculas e minúsculas.
-     * O array de temas retornado é ordenado alfabeticamente.
      *
-     * @param chaveDeBusca o termo a ser pesquisado dentro do conteúdo dos resumos
-     * @return um array de String contendo os temas encontrados em ordem alfabética
+     * @param chaveDeBusca termo a ser pesquisado dentro do conteúdo dos resumos
+     * @return um array de String com os temas encontrados ordenados alfabeticamente
      */
     public String[] busca(String chaveDeBusca) {
         String chaveLower = chaveDeBusca.toLowerCase();
+        int qntdResumos = this.conta();
         int contador = 0;
 
-        for (int i = 0; i < quantidadeAtual; i++) {
-            if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
+        for (int i = 0; i < qntdResumos; i++) {
+            if (this.resumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
                 contador++;
             }
         }
@@ -130,9 +128,9 @@ public class RegistroResumos {
         String[] resultados = new String[contador];
         int index = 0;
 
-        for (int i = 0; i < quantidadeAtual; i++) {
-            if (totalResumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
-                resultados[index] = totalResumos[i].getTema();
+        for (int i = 0; i < qntdResumos; i++) {
+            if (this.resumos[i].getConteudo().toLowerCase().contains(chaveLower)) {
+                resultados[index] = this.resumos[i].getTema();
                 index++;
             }
         }
